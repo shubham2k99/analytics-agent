@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface-2: #ecebe4;
+  --ink: #1c2b33;
+  --ink-muted: #5b6b70;
+  --ink-faint: #8b968f;
+  --accent: #b8752e;
+  --accent-ink: #6e4318;
+  --accent-soft: #f0e2ce;
+  --positive: #2f7a67;
+  --line: #ddd9cd;
+  --font-display: "Fraunces", serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.grid-paper {
+  background-image: radial-gradient(circle, var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-color: var(--bg);
+}
+
+.brass-rule {
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 40%, transparent 100%);
+}

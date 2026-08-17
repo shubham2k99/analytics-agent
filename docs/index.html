@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GAnalyst — how it was built</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0; --surface: #ffffff; --ink: #1c2b33; --ink-muted: #5b6b70;
+    --ink-faint: #8b968f; --accent: #b8752e; --accent-ink: #6e4318; --line: #ddd9cd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "IBM Plex Sans", sans-serif; line-height: 1.7;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 60px 24px 100px; }
+  h1 { font-family: "Fraunces", serif; font-size: 40px; margin: 0 0 8px; }
+  .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--accent-ink); margin: 0 0 16px; }
+  .lede { color: var(--ink-muted); font-size: 16px; margin: 0 0 40px; }
+  h2 { font-family: "Fraunces", serif; font-size: 24px; margin: 56px 0 16px;
+    border-top: 1px solid var(--line); padding-top: 40px; }
+  h2:first-of-type { border-top: none; padding-top: 0; margin-top: 40px; }
+  p { font-size: 15px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; font-size: 15px; }
+  code { font-family: "IBM Plex Mono", monospace; font-size: 13px; background: var(--surface);
+    border: 1px solid var(--line); padding: 1px 6px; }
+  .arch-box { background: var(--surface); border: 1px solid var(--line); padding: 16px 20px; margin: 20px 0; }
+  .arch-flow { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink-muted); line-height: 2; }
+  .learnings { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 16px 0; }
+  .cta-row { display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap; }
+  .btn { font-family: "IBM Plex Mono", monospace; font-size: 13px; text-decoration: none; padding: 10px 18px;
+    border: 1px solid var(--ink); color: var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--bg); }
+  footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Case study</p>
+  <h1>GAnalyst</h1>
+  <p class="lede">
+    An AI agent that connects to Google Analytics 4 and answers plain-English questions
+    about site traffic — with charts and summaries generated on the fly. Built end to end,
+    including every bug fixed along the way.
+  </p>
+
+  <h2>Objective</h2>
+  <p>
+    As a marketing analyst, I wanted two things at once: a genuinely useful tool for
+    querying GA4 without digging through report menus, and a real, hands-on understanding
+    of how AI agents actually work — not just reading about tool use and OAuth, but
+    building something that depends on getting them right.
+  </p>
+
+  <h2>How it started</h2>
+  <p>
+    The idea was simple to say and harder to build: connect an AI agent to Google Analytics
+    so it could answer traffic questions directly, generate charts, and summarize trends —
+    a chat interface standing in for a GA4 dashboard. The scope was deliberately a full web
+    app (not just a script), with real OAuth login so it could eventually be shared with
+    others, not just run privately on one machine.
+  </p>
+
+  <h2>Workflow</h2>
+  <p>The build happened in stages, each one surfacing a real problem to solve:</p>
+  <ul>
+    <li><strong>Scaffolding</strong> — Next.js app, GA4 Data API client, and a Claude
+      tool-use agent loop, built and verified in a sandboxed environment first.</li>
+    <li><strong>Local setup</strong> — Google Cloud OAuth credentials, an Anthropic API
+      key, and environment variables, hitting real beginner friction points: disk space
+      running out mid-install, a hidden duplicate API key line silently overriding the
+      real one, and a TextEdit rich-text paste silently corrupting a key.</li>
+    <li><strong>A real session bug</strong> — the OAuth login loop turned out to be caused
+      by using an outdated cookie-handling pattern (<code>req/res</code>) instead of the
+      App Router's <code>next/headers</code> cookies API. Diagnosed from server logs, fixed,
+      rebuilt, verified.</li>
+    <li><strong>Visual design</strong> — moved off default Tailwind styling to a deliberate
+      "measurement instrument" identity: paper background, brass accent, serif display type,
+      monospace data readouts.</li>
+    <li><strong>Validation</strong> — rather than trusting answers by default, built the habit
+      of cross-checking the agent's numbers against the real GA4 dashboard, and understanding
+      where GA4's own quirks (sampling, thresholding, a globally shared demo-account quota)
+      could look like bugs but weren't.</li>
+  </ul>
+
+  <h2>Architecture</h2>
+  <p>Three parts talk to each other, with the backend as the only thing holding credentials:</p>
+  <div class="arch-box">
+    <div class="arch-flow">
+      Browser (chat UI)<br>
+      &nbsp;&nbsp;↕<br>
+      Next.js backend — API routes + encrypted session cookie<br>
+      &nbsp;&nbsp;↕ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕<br>
+      Google (OAuth + GA4 Data API) &nbsp;&nbsp; Claude API (reasoning + tool calls)
+    </div>
+  </div>
+  <p>
+    When a question comes in, Claude doesn't fetch data itself — it requests a specific,
+    narrow tool call (<code>run_ga4_report</code> with exact metrics/dimensions/dates), the
+    backend executes the real GA4 API call, and the result is handed back to Claude to reason
+    over and turn into an answer, optionally with a chart. This tool-use loop can repeat
+    several times per question before Claude has enough to respond.
+  </p>
+
+  <h2>Final outcome</h2>
+  <p>
+    A working chat interface that connects to any GA4 property via OAuth (including Google's
+    public demo account, so it's testable without needing your own site), answers traffic
+    questions with real fetched data, renders inline charts, and is deployable to Vercel as
+    a live, shareable app rather than a local-only script.
+  </p>
+
+  <h2>Learnings</h2>
+  <div class="learnings">
+    <p><strong>Tool design determines agent reliability more than the model does.</strong>
+      Narrow, specific tools (fetch this exact report) produce predictable behavior; vague
+      ones invite guessing.</p>
+  </div>
+  <div class="learnings">
+    <p><strong>AI answers need validation, not blind trust.</strong> Building a small "golden
+      set" of questions with known answers, and checking groundedness against the raw data
+      GA4 actually returned, is the difference between a demo and something usable.</p>
+  </div>
+  <div class="learnings">
+    <p><strong>Most real bugs during this build were environment issues, not code
+      issues</strong> — disk space, duplicate env lines, a text editor silently altering
+      characters. Debugging systematically (checking file contents directly, isolating one
+      variable at a time) mattered more than any single line of code.</p>
+  </div>
+  <div class="learnings">
+    <p><strong>A dashboard and a chat agent solve different problems.</strong> Fixed, known
+      metrics don't need an LLM in the loop at all — only open-ended questions do. Knowing
+      when <em>not</em> to reach for AI is part of using it well.</p>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn primary" href="https://github.com/shubham2k99/analytics-agent">View the code on GitHub</a>
+    <a class="btn" href="https://github.com/shubham2k99/analytics-agent#readme">Setup instructions</a>
+  </div>
+
+  <footer>Built with Next.js, the Claude API, and the Google Analytics Data API.</footer>
+</div>
+</body>
+</html>

@@ -58,6 +58,27 @@
   .toc a:hover { color: var(--accent-ink); }
   .step-num { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent-ink);
     display: inline-block; width: 22px; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn { transition: opacity 0.15s ease; }
+  .btn:hover { opacity: 0.75; }
+  .hero-frame { background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+    overflow: hidden; margin: 40px 0 8px; }
+  .hero-frame-head { padding: 10px 16px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center; }
+  .hero-frame-head p { margin: 0; }
+  .hero-frame-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; background-image:
+    radial-gradient(circle, var(--line) 1px, transparent 1px); background-size: 20px 20px; }
+  .bubble-user { align-self: flex-end; max-width: 70%; background: var(--ink); color: var(--bg);
+    padding: 8px 14px; border-radius: 12px 12px 2px 12px; font-size: 13.5px; }
+  .bubble-answer { align-self: flex-start; max-width: 88%; background: var(--surface);
+    border-left: 3px solid var(--accent); padding: 10px 14px; font-size: 13.5px; }
+  .mini-chart { background: var(--surface); border: 1px solid var(--line); padding: 10px 14px;
+    align-self: flex-start; width: 240px; }
+  .mini-chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: 8px; }
+  .mini-chart-bars div { flex: 1; background: var(--accent); }
+  .bug-title { display: flex; align-items: center; gap: 8px; }
+  .bug-title::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 </style>
 </head>
 <body>
@@ -70,6 +91,24 @@
     about a site's traffic — with charts, summaries, and a next step suggested,
     generated on the fly.
   </p>
+
+  <div class="hero-frame">
+    <div class="hero-frame-head">
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink);">GAnalyst</p>
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent-ink);">Google Merchandise Store</p>
+    </div>
+    <div class="hero-frame-body">
+      <div class="bubble-user">what's driving growth this month?</div>
+      <div class="bubble-answer">Sessions are up 18%, mostly from a 45% jump in organic search. Worth checking whether that traffic is converting at the same rate as other channels.</div>
+      <div class="mini-chart">
+        <p style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.04em;">Sessions by day</p>
+        <div class="mini-chart-bars">
+          <div style="height:35%"></div><div style="height:45%"></div><div style="height:40%"></div>
+          <div style="height:60%"></div><div style="height:80%"></div><div style="height:70%"></div><div style="height:95%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="stat-row">
     <div class="stat"><span class="num">~35</span><span class="label">files</span></div>
@@ -137,6 +176,25 @@
     real API request, and the result is fed back for Claude to reason over — repeating up
     to 6 times per question before it writes a final answer.
   </p>
+  <div class="arch-box">
+    <svg viewBox="0 0 600 200" width="100%" style="display:block; font-family:'IBM Plex Mono',monospace; font-size:11px;">
+      <rect x="10" y="80" width="130" height="44" fill="none" stroke="var(--line)" stroke-width="1"/>
+      <text x="75" y="106" text-anchor="middle" fill="var(--ink)">Claude</text>
+      <rect x="235" y="80" width="130" height="44" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="300" y="102" text-anchor="middle" fill="var(--accent-ink)">run_ga4_report</text>
+      <text x="300" y="115" text-anchor="middle" fill="var(--ink-faint)" font-size="9">tool call</text>
+      <rect x="460" y="80" width="130" height="44" fill="none" stroke="var(--line)" stroke-width="1"/>
+      <text x="525" y="102" text-anchor="middle" fill="var(--ink)">GA4 Data API</text>
+      <text x="525" y="115" text-anchor="middle" fill="var(--ink-faint)" font-size="9">real request</text>
+      <line x1="140" y1="102" x2="233" y2="102" stroke="var(--ink-faint)" stroke-width="1"/>
+      <polygon points="233,98 233,106 240,102" fill="var(--ink-faint)"/>
+      <line x1="365" y1="102" x2="458" y2="102" stroke="var(--ink-faint)" stroke-width="1"/>
+      <polygon points="458,98 458,106 465,102" fill="var(--ink-faint)"/>
+      <path d="M 525 124 C 525 160, 75 160, 75 124" fill="none" stroke="var(--ink-faint)" stroke-width="1"/>
+      <polygon points="71,130 79,130 75,122" fill="var(--ink-faint)"/>
+      <text x="300" y="172" text-anchor="middle" fill="var(--ink-faint)" font-size="9.5">real data returned, fed back to Claude — repeats up to 6x</text>
+    </svg>
+  </div>
   <p>
     <span class="step-num">04</span><strong>The session bug.</strong> A working-looking
     OAuth flow silently failed to persist login — traced to an outdated cookie-handling

@@ -2,8 +2,6 @@ import Anthropic from "@anthropic-ai/sdk";
 import { AppSession } from "./session";
 import { getValidAccessToken, listGA4Properties, runGA4Report } from "./ga4";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const MODEL = "claude-sonnet-4-6";
 
 const SYSTEM_PROMPT = `You are an analytics assistant with live access to a user's Google Analytics 4 (GA4) property via tools.
@@ -16,6 +14,7 @@ Guidelines:
 - Interpret relative dates yourself (e.g. "last 30 days") and pass ISO date strings or GA4 relative date keywords (today, yesterday, NdaysAgo) to dateRanges.
 - If the user asks for a trend over time, include "date" as a dimension so the data can be charted as a time series.
 - After getting tool results, write a concise, insight-focused natural-language answer (call out notable numbers, trends, comparisons) — don't just restate the raw table.
+- Always close your answer with one short line suggesting a specific, relevant next thing worth investigating (e.g. a related metric to check, a time range worth comparing, a segment worth breaking down) — grounded in the data you actually fetched, not generic advice.
 - If the answer is well suited to a chart (trends, comparisons, breakdowns, top-N lists), also produce a chart specification by calling the propose_chart tool with the exact data to plot. Only propose one chart per answer, and only when it genuinely helps.
 - If you don't know which GA4 property to use, call list_ga4_properties first.
 - Be concise. This is a chat interface, not a report document.`;
@@ -119,6 +118,14 @@ export async function runAgent(
   history: ChatTurn[],
   userMessage: string
 ): Promise<AgentResult> {
+  const apiKey = session.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "No Anthropic API key available. Add your own key to use the chat."
+    );
+  }
+  const anthropic = new Anthropic({ apiKey });
+
   const messages: Anthropic.MessageParam[] = [
     ...history.map((h) => ({ role: h.role, content: h.content } as Anthropic.MessageParam)),
     { role: "user", content: userMessage },

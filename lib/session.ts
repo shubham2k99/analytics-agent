@@ -8,6 +8,7 @@ export interface AppSession {
   };
   propertyId?: string; // selected GA4 property, e.g. "properties/123456789"
   propertyName?: string;
+  anthropicApiKey?: string; // visitor's own key, so the site owner never foots the bill
 }
 
 export const sessionOptions: SessionOptions = {

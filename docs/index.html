@@ -37,6 +37,8 @@
   .card.accent { border-left: 3px solid var(--accent); }
   .card h4 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
   .card p { margin: 0; font-size: 14.5px; color: var(--ink-muted); }
+  .tip { background: var(--accent-soft, #f0e2ce); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 16px 0; font-size: 14.5px; }
+  .tip strong { color: var(--accent-ink); }
   .bug-log { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
   .bug { background: var(--surface); border: 1px solid var(--line); padding: 16px 20px; }
   .bug-title { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--accent-ink);
@@ -54,6 +56,8 @@
   .toc { font-family: "IBM Plex Mono", monospace; font-size: 13px; margin: 32px 0 0; }
   .toc a { color: var(--ink-muted); text-decoration: none; display: block; margin-bottom: 6px; }
   .toc a:hover { color: var(--accent-ink); }
+  .step-num { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent-ink);
+    display: inline-block; width: 22px; }
 </style>
 </head>
 <body>
@@ -63,214 +67,109 @@
   <h1>GAnalyst</h1>
   <p class="lede">
     An AI agent that connects to Google Analytics 4 and answers plain-English questions
-    about a site's traffic — with charts and summaries generated on the fly, built from
-    scratch as both a working tool and a hands-on lesson in how AI agents actually work.
+    about a site's traffic — with charts, summaries, and a next step suggested,
+    generated on the fly.
   </p>
 
   <div class="stat-row">
     <div class="stat"><span class="num">~35</span><span class="label">files</span></div>
     <div class="stat"><span class="num">3</span><span class="label">external APIs wired together</span></div>
-    <div class="stat"><span class="num">2</span><span class="label">real production bugs fixed</span></div>
-    <div class="stat"><span class="num">1</span><span class="label">security incident, caught and resolved</span></div>
+    <div class="stat"><span class="num">4</span><span class="label">real bugs fixed in production</span></div>
+    <div class="stat"><span class="num">$5</span><span class="label">enough to fully build and test this</span></div>
   </div>
 
   <nav class="toc">
-    <a href="#objective">Objective</a>
-    <a href="#origin">How it started</a>
-    <a href="#architecture">Architecture</a>
-    <a href="#workflow">Build workflow</a>
-    <a href="#bugs">Bugs that shaped the build</a>
-    <a href="#validation">Validating the agent's answers</a>
-    <a href="#outcome">Final outcome</a>
+    <a href="#objective">Objective &amp; motivation</a>
+    <a href="#walkthrough">Project walkthrough</a>
+    <a href="#output">Output</a>
     <a href="#learnings">Learnings</a>
+    <a href="#problems">Major problems &amp; errors</a>
   </nav>
 
-  <h2 id="objective">Objective</h2>
+  <h2 id="objective">Objective &amp; motivation</h2>
   <p>
-    As a marketing analyst, GA4's interface is familiar territory — but pulling a specific
-    number for a specific stakeholder question usually means navigating several report
-    screens, adjusting date ranges, and exporting to a spreadsheet before it's presentable.
-    The goal was to collapse that into a single question typed in plain English.
+    As a marketing analyst, the actual bottleneck was never understanding GA4 — it was
+    the friction of getting a specific number in front of a specific stakeholder.
+    A simple question like "what drove last week's traffic spike?" usually meant
+    navigating three report screens, adjusting a date range, cross-referencing a channel
+    breakdown, and exporting to a spreadsheet before it was presentable. That's real time,
+    repeated constantly, for questions that are conceptually simple.
   </p>
   <p>
-    The second, equally important goal: build real, defensible AI-engineering literacy —
-    not by reading about how agents work, but by making every decision that determines
-    whether one works correctly. Which tools does the agent get access to. What happens
-    when a tool call fails. How do you know if an answer is actually right. Those are the
-    questions this project was built to answer firsthand.
-  </p>
-
-  <h2 id="origin">How it started</h2>
-  <p>
-    The starting brief was simple to state and non-trivial to build: a chat interface,
-    backed by a real GA4 connection via OAuth (not a hardcoded service account — the goal
-    was something that could eventually be shared with other people, each seeing their own
-    data), that could answer traffic questions and render charts inline.
+    The business case for this project was collapsing that entire loop into one typed
+    question. Instead of "let me pull that report and get back to you," the goal was
+    "ask, and get a real, data-grounded answer in seconds" — genuinely useful for ad hoc
+    stakeholder requests, standups, or a quick sanity check before a meeting.
   </p>
   <p>
-    The scope was deliberately a full web application rather than a script or notebook.
-    A script proves an API call works; a web app proves an entire system holds together —
-    auth, session handling, an LLM in the loop, and a UI a non-technical person could
-    actually use.
+    The second motivation was personal and just as important: building real, defensible
+    AI-engineering literacy rather than reading about it. Every decision that determines
+    whether an AI agent actually works — what tools it's allowed to use, what happens
+    when something fails, how you know an answer is trustworthy — had to be made here,
+    not assumed.
   </p>
 
-  <h2 id="architecture">Architecture</h2>
+  <h2 id="walkthrough">Project walkthrough</h2>
   <p>
-    Three parts talk to each other, with the backend as the only component that ever
-    touches credentials:
+    <span class="step-num">01</span><strong>Scaffolding.</strong> Started with a Next.js
+    App Router project, a thin GA4 Data API client (wrapping <code>runReport</code> and
+    <code>accountSummaries</code>), and a Claude tool-use agent loop — built and
+    build-verified before ever touching a real Google Cloud project, to separate code
+    correctness from environment setup.
   </p>
-  <div class="arch-box">
-    <div class="arch-flow">Browser (chat UI)
-      ↕
-Next.js backend — API routes + encrypted session cookie
-      ↕                              ↕
-Google (OAuth + GA4 Data API)    Claude API (tool use)</div>
+  <p>
+    <span class="step-num">02</span><strong>Google Cloud credentials.</strong> Created an
+    OAuth client, enabled the GA4 Data + Admin APIs, set the
+    <code>analytics.readonly</code> scope on the consent screen, and added test users.
+  </p>
+  <div class="tip">
+    <strong>Practical tip:</strong> for the Anthropic API key, a $5 credit is genuinely
+    enough to build and thoroughly test something like this — each question costs
+    fractions of a cent, and $5 covers far more testing than you'd expect before you
+    need to think about billing again.
   </div>
   <p>
-    The core mechanism is Claude's <strong>tool use</strong> (function calling). Rather
-    than letting the model generate a GA4 query as free text, it's given three narrowly
-    scoped tools:
-  </p>
-  <div class="card">
-    <h4><code>list_ga4_properties</code></h4>
-    <p>Lists the GA4 properties the connected Google account can access.</p>
-  </div>
-  <div class="card">
-    <h4><code>run_ga4_report</code></h4>
-    <p>Executes a real GA4 Data API report — takes exact metric names, dimension names,
-      and a date range, nothing more open-ended than that.</p>
-  </div>
-  <div class="card">
-    <h4><code>propose_chart</code></h4>
-    <p>Packages a subset of the fetched data into a chart spec (type, axes, series) for
-      the frontend to render with Recharts.</p>
-  </div>
-  <p>
-    When a question comes in, the backend sends it to Claude along with these tool
-    definitions. Claude doesn't fetch anything itself — it returns a structured request
-    (e.g. <code>run_ga4_report({ metrics: ["sessions"], dimensions: ["date"], ... })</code>),
-    the backend executes the actual HTTPS call to Google, and the real result is fed back
-    to Claude to reason over. This loop can repeat several times in a single turn — a
-    comparison question might trigger two separate report calls before Claude has enough
-    to write an answer — capped at 6 iterations to prevent runaway loops.
+    <span class="step-num">03</span><strong>Wiring the agent loop.</strong> The core
+    mechanism is Claude's tool use: rather than letting the model generate a GA4 query
+    as free text, it's given three narrow tools — <code>list_ga4_properties</code>,
+    <code>run_ga4_report</code> (exact metrics, dimensions, date range — nothing looser),
+    and <code>propose_chart</code>. Claude requests a tool call, the backend executes the
+    real API request, and the result is fed back for Claude to reason over — repeating up
+    to 6 times per question before it writes a final answer.
   </p>
   <p>
-    Session state (the Google OAuth tokens, which GA4 property is selected) lives in an
-    encrypted cookie via <code>iron-session</code>, not a database — a deliberate scope
-    decision for a single-user MVP, with the tradeoff noted explicitly for anyone scaling
-    this to multiple concurrent users.
+    <span class="step-num">04</span><strong>The session bug.</strong> A working-looking
+    OAuth flow silently failed to persist login — traced to an outdated cookie-handling
+    pattern that doesn't reliably work with the Next.js App Router, fixed by switching to
+    the <code>next/headers</code> cookies API (full detail in the problems log below).
+  </p>
+  <p>
+    <span class="step-num">05</span><strong>Visual identity.</strong> Moved off default
+    styling toward a deliberate "measurement instrument" look — paper background, brass
+    accent, serif display type, monospace data readouts — reasoning that a tool about
+    precise numbers should visually read like one.
+  </p>
+  <p>
+    <span class="step-num">06</span><strong>Validation and hardening.</strong>
+    Cross-checked agent answers against the live GA4 dashboard, built a small "golden set"
+    of test questions with known answers, and added an explicit instruction requiring
+    every answer to close with a grounded suggestion for what to look into next.
+  </p>
+  <p>
+    <span class="step-num">07</span><strong>Going live.</strong> Cleaned the repo of
+    secrets (see the leaked-key incident below), deployed to Vercel, and added a
+    bring-your-own-key flow so a public visitor's usage is billed to their own Anthropic
+    account, never mine.
   </p>
 
-  <h2 id="workflow">Build workflow</h2>
-  <p>The build moved in five stages, each with a distinct failure mode to solve:</p>
-  <ol>
-    <li><strong>Scaffolding.</strong> Next.js App Router project, GA4 Data API client
-      (thin wrapper around <code>runReport</code> and <code>accountSummaries</code>), and
-      the Claude tool-use agent loop — built and build-verified before ever touching a
-      real Google Cloud project, to isolate code correctness from environment setup.</li>
-    <li><strong>Google Cloud + credentials.</strong> OAuth client, consent screen scopes
-      (<code>analytics.readonly</code>), test users, and an Anthropic API key. This stage
-      surfaced more real friction than any code — see the bug log below.</li>
-    <li><strong>The session bug.</strong> A working-looking OAuth flow that silently
-      failed to persist login state, diagnosed from server logs and fixed by switching
-      cookie-handling APIs entirely (detailed below).</li>
-    <li><strong>Visual identity.</strong> Deliberately moved off default Tailwind styling
-      toward a "measurement instrument" aesthetic — paper background, brass accent,
-      Fraunces for display type, IBM Plex Mono for all numeric/data readouts — reasoning
-      that a tool about precise numbers should look like one.</li>
-    <li><strong>Hardening and validation.</strong> Cross-checking agent answers against
-      the live GA4 dashboard, understanding GA4's own quirks (sampling, thresholding, a
-      globally shared quota on the public demo property) well enough to distinguish "the
-      agent is wrong" from "GA4 itself is behaving as designed."</li>
-  </ol>
-
-  <h2 id="bugs">Bugs that shaped the build</h2>
+  <h2 id="output">Output</h2>
   <p>
-    None of these were exotic — they were the ordinary friction of shipping something
-    real, and each one taught something that a tutorial skips.
-  </p>
-  <div class="bug-log">
-    <div class="bug">
-      <div class="bug-title">The OAuth login loop</div>
-      <p>
-        After a successful Google login, the app would redirect home — then immediately
-        act as if login had never happened, sending the user back to "Connect." The
-        session cookie was being set using an older <code>getIronSession(req, res, ...)</code>
-        pattern built for Node's raw request/response objects, which doesn't reliably
-        persist cookies against Next.js's App Router <code>Request</code>/<code>Response</code>
-        objects. The fix: rewrite every session read/write to use
-        <code>getIronSession(await cookies(), ...)</code> from <code>next/headers</code> —
-        the API the App Router actually expects. Diagnosed by reading raw server request
-        logs and noticing the callback route fired twice in a row, which is the visible
-        symptom of a session that never actually saved.
-      </p>
-    </div>
-    <div class="bug">
-      <div class="bug-title">A leaked API key, caught and rotated</div>
-      <p>
-        Midway through adding a new feature, a routine check of the GitHub repo revealed
-        <code>.env.local</code> — containing the real Anthropic key, Google OAuth secret,
-        and session secret — sitting in the public commit history. Root cause: a missing
-        <code>.gitignore</code> file. All three credentials were rotated immediately, the
-        repository was deleted and rebuilt from a clean local state with
-        <code>.gitignore</code> verified before the first commit, and every
-        subsequent commit was checked for file count and content before publishing.
-        The practical lesson: treat "check the actual file list before you commit" as a
-        non-negotiable step, not a nice-to-have.
-      </p>
-    </div>
-    <div class="bug">
-      <div class="bug-title">Silent key corruption via a rich-text editor</div>
-      <p>
-        A pasted API key produced a persistent "invalid API key" error even though the
-        key was copied correctly. The cause: pasting into TextEdit's default rich-text
-        mode subtly altered characters in a way that was visually invisible but broke the
-        literal string. Fixed by writing the key directly from the clipboard into the env
-        file via a terminal command (<code>sed</code> + <code>pbpaste</code>), bypassing
-        any GUI text editor entirely.
-      </p>
-    </div>
-    <div class="bug">
-      <div class="bug-title">A duplicate env variable, silently ignored</div>
-      <p>
-        Even after "fixing" the API key, the same auth error persisted. A placeholder
-        line (<code>ANTHROPIC_API_KEY=letter</code>) had been left in the file alongside
-        the real key on a separate line — and the environment loader kept the
-        first declared value, silently discarding the second. Diagnosed by
-        checking the byte length of the matched line before assuming the key itself was
-        wrong.
-      </p>
-    </div>
-  </div>
-
-  <h2 id="validation">Validating the agent's answers</h2>
-  <p>
-    A working pipeline and a trustworthy one are different claims. Getting the agent to
-    respond isn't evidence it's responding correctly — GA4 has real limits
-    (sampling on complex queries, thresholding that hides small user counts, a default
-    attribution model that may not match how a team actually reports) that an LLM can
-    easily paper over with a confident-sounding but wrong answer.
-  </p>
-  <p>The approach taken here, in order of how much it actually helps:</p>
-  <ul>
-    <li><strong>A golden set.</strong> A fixed list of real questions with answers
-      cross-checked directly against the native GA4 dashboard, re-run after any change to
-      the system prompt or agent logic.</li>
-    <li><strong>Groundedness checks.</strong> Confirming the final written answer actually
-      matches the raw numbers the tool call returned, not a loosely-summarized
-      approximation of them.</li>
-    <li><strong>Explicit guardrails in the system prompt.</strong> Instructions that
-      constrain the model to real GA4 metric names and require a tool call before any
-      numeric claim — closing off the easiest path to a hallucinated statistic.</li>
-  </ul>
-
-  <h2 id="outcome">Final outcome</h2>
-  <p>
-    A working chat interface, connectable to any GA4 property via OAuth (including
-    Google's public demo account, so it's testable without needing your own site), that
-    answers real traffic questions using live fetched data and renders inline charts —
-    plus a rebuilt visual identity, an in-app project explainer, and a clean, secret-free
-    public repository ready to deploy to Vercel as a live, shareable app.
+    A working chat interface, connectable to any GA4 property via OAuth — including
+    Google's public demo account, so it's testable without needing a real site — that
+    answers genuine traffic questions using live fetched data, renders inline charts, and
+    closes every answer with a suggested next step. It's deployed, publicly linkable, and
+    the underlying agent logic is designed to keep improving without changing the
+    front end visitors interact with.
   </p>
 
   <h2 id="learnings">Learnings</h2>
@@ -280,21 +179,69 @@ Google (OAuth + GA4 Data API)    Claude API (tool use)</div>
       Broad or vague tools invite the model to guess.</p>
   </div>
   <div class="card accent">
-    <h4>AI answers need active validation, not trust by default</h4>
-    <p>A golden set and a groundedness habit are the actual difference between a demo and
-      something you'd let a stakeholder rely on.</p>
+    <h4>"It responds" and "it's right" are different claims</h4>
+    <p>A golden set and a habit of checking groundedness are the actual difference
+      between a demo and something you'd let a stakeholder rely on.</p>
   </div>
   <div class="card accent">
-    <h4>Most real bugs in a build like this are environment issues, not logic bugs</h4>
+    <h4>Most real bugs are environment issues, not logic bugs</h4>
     <p>Disk space, a missing gitignore, a text editor silently altering a paste — none of
-      these show up in a tutorial, and all of them cost more debugging time than any
-      actual application code.</p>
+      these show up in a tutorial, and all of them cost more time than any actual
+      application code.</p>
   </div>
   <div class="card accent">
     <h4>Knowing when not to use an LLM is part of using one well</h4>
-    <p>Fixed, known metrics don't need an agent in the loop at all — a direct API call is
+    <p>Fixed, known metrics don't need an agent in the loop — a direct API call is
       faster, cheaper, and has nothing to hallucinate. The chat only earns its keep for
       genuinely open-ended questions.</p>
+  </div>
+
+  <h2 id="problems">Major problems &amp; errors</h2>
+  <p>
+    None of these were exotic — they were the ordinary friction of shipping something
+    real, and each one taught something a tutorial skips.
+  </p>
+  <div class="bug-log">
+    <div class="bug">
+      <div class="bug-title">The OAuth login loop</div>
+      <p>
+        After a successful Google login, the app redirected home, then acted as if login
+        never happened. Root cause: session cookies were being set with an older
+        <code>getIronSession(req, res, ...)</code> pattern that doesn't reliably persist
+        against the App Router's <code>Request</code>/<code>Response</code> objects.
+        Fixed by rewriting every session read/write to use
+        <code>getIronSession(await cookies(), ...)</code> from <code>next/headers</code>.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">A leaked API key, caught and rotated</div>
+      <p>
+        A routine check of the GitHub repo revealed <code>.env.local</code> — real
+        Anthropic key, Google OAuth secret, session secret — sitting in public commit
+        history, caused by a missing <code>.gitignore</code>. All three credentials were
+        rotated immediately, and the repository was deleted and rebuilt clean, with the
+        file list checked before every commit from that point on.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">Silent key corruption via a rich-text editor</div>
+      <p>
+        A correctly-copied API key still produced "invalid API key" errors. Cause:
+        pasting into a rich-text editor subtly altered characters in a way that was
+        visually invisible but broke the literal string. Fixed by writing the key
+        directly from the clipboard into the env file via terminal, bypassing any GUI
+        editor entirely.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">A duplicate env variable, silently ignored</div>
+      <p>
+        Even after "fixing" the key, the same error persisted. A placeholder line had
+        been left in the file alongside the real key on a separate line, and the
+        environment loader silently kept the first declared value. Diagnosed by checking
+        the byte length of the matched line before assuming the key itself was wrong.
+      </p>
+    </div>
   </div>
 
   <div class="cta-row">

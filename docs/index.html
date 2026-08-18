@@ -10,34 +10,50 @@
   :root {
     --bg: #f5f4f0; --surface: #ffffff; --ink: #1c2b33; --ink-muted: #5b6b70;
     --ink-faint: #8b968f; --accent: #b8752e; --accent-ink: #6e4318; --line: #ddd9cd;
+    --positive: #2f7a67;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
-    font-family: "IBM Plex Sans", sans-serif; line-height: 1.7;
+    font-family: "IBM Plex Sans", sans-serif; line-height: 1.75; font-size: 16px;
   }
-  .wrap { max-width: 720px; margin: 0 auto; padding: 60px 24px 100px; }
-  h1 { font-family: "Fraunces", serif; font-size: 40px; margin: 0 0 8px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 64px 24px 120px; }
+  h1 { font-family: "Fraunces", serif; font-size: 44px; margin: 0 0 8px; line-height: 1.1; }
   .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 12px; text-transform: uppercase;
     letter-spacing: 0.08em; color: var(--accent-ink); margin: 0 0 16px; }
-  .lede { color: var(--ink-muted); font-size: 16px; margin: 0 0 40px; }
-  h2 { font-family: "Fraunces", serif; font-size: 24px; margin: 56px 0 16px;
-    border-top: 1px solid var(--line); padding-top: 40px; }
-  h2:first-of-type { border-top: none; padding-top: 0; margin-top: 40px; }
-  p { font-size: 15px; }
-  ul { padding-left: 20px; }
-  li { margin-bottom: 8px; font-size: 15px; }
+  .lede { color: var(--ink-muted); font-size: 18px; margin: 0 0 48px; max-width: 60ch; }
+  h2 { font-family: "Fraunces", serif; font-size: 28px; margin: 64px 0 20px;
+    border-top: 1px solid var(--line); padding-top: 48px; }
+  h2:first-of-type { border-top: none; padding-top: 0; margin-top: 48px; }
+  h3 { font-family: "IBM Plex Sans", sans-serif; font-weight: 600; font-size: 16px; margin: 28px 0 10px; }
+  p { font-size: 15.5px; margin: 0 0 16px; }
+  ul, ol { padding-left: 22px; margin: 0 0 16px; }
+  li { margin-bottom: 10px; font-size: 15.5px; }
   code { font-family: "IBM Plex Mono", monospace; font-size: 13px; background: var(--surface);
-    border: 1px solid var(--line); padding: 1px 6px; }
-  .arch-box { background: var(--surface); border: 1px solid var(--line); padding: 16px 20px; margin: 20px 0; }
-  .arch-flow { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink-muted); line-height: 2; }
-  .learnings { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 16px 0; }
-  .cta-row { display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap; }
-  .btn { font-family: "IBM Plex Mono", monospace; font-size: 13px; text-decoration: none; padding: 10px 18px;
+    border: 1px solid var(--line); padding: 1px 6px; border-radius: 2px; }
+  .arch-box { background: var(--surface); border: 1px solid var(--line); padding: 20px 24px; margin: 24px 0; }
+  .arch-flow { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink-muted); line-height: 2.1; white-space: pre; overflow-x: auto; }
+  .card { background: var(--surface); border: 1px solid var(--line); padding: 18px 22px; margin: 16px 0; }
+  .card.accent { border-left: 3px solid var(--accent); }
+  .card h4 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .card p { margin: 0; font-size: 14.5px; color: var(--ink-muted); }
+  .bug-log { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+  .bug { background: var(--surface); border: 1px solid var(--line); padding: 16px 20px; }
+  .bug-title { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--accent-ink);
+    text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .stat-row { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; }
+  .stat { font-family: "IBM Plex Mono", monospace; }
+  .stat .num { font-size: 28px; color: var(--accent-ink); display: block; }
+  .stat .label { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .cta-row { display: flex; gap: 12px; margin-top: 56px; flex-wrap: wrap; }
+  .btn { font-family: "IBM Plex Mono", monospace; font-size: 13px; text-decoration: none; padding: 12px 20px;
     border: 1px solid var(--ink); color: var(--ink); }
   .btn.primary { background: var(--ink); color: var(--bg); }
-  footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line);
+  footer { margin-top: 96px; padding-top: 24px; border-top: 1px solid var(--line);
     font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-faint); }
+  .toc { font-family: "IBM Plex Mono", monospace; font-size: 13px; margin: 32px 0 0; }
+  .toc a { color: var(--ink-muted); text-decoration: none; display: block; margin-bottom: 6px; }
+  .toc a:hover { color: var(--accent-ink); }
 </style>
 </head>
 <body>
@@ -47,97 +63,238 @@
   <h1>GAnalyst</h1>
   <p class="lede">
     An AI agent that connects to Google Analytics 4 and answers plain-English questions
-    about site traffic — with charts and summaries generated on the fly. Built end to end,
-    including every bug fixed along the way.
+    about a site's traffic — with charts and summaries generated on the fly, built from
+    scratch as both a working tool and a hands-on lesson in how AI agents actually work.
   </p>
 
-  <h2>Objective</h2>
+  <div class="stat-row">
+    <div class="stat"><span class="num">~35</span><span class="label">files</span></div>
+    <div class="stat"><span class="num">3</span><span class="label">external APIs wired together</span></div>
+    <div class="stat"><span class="num">2</span><span class="label">real production bugs fixed</span></div>
+    <div class="stat"><span class="num">1</span><span class="label">security incident, caught and resolved</span></div>
+  </div>
+
+  <nav class="toc">
+    <a href="#objective">Objective</a>
+    <a href="#origin">How it started</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#workflow">Build workflow</a>
+    <a href="#bugs">Bugs that shaped the build</a>
+    <a href="#validation">Validating the agent's answers</a>
+    <a href="#outcome">Final outcome</a>
+    <a href="#learnings">Learnings</a>
+  </nav>
+
+  <h2 id="objective">Objective</h2>
   <p>
-    As a marketing analyst, I wanted two things at once: a genuinely useful tool for
-    querying GA4 without digging through report menus, and a real, hands-on understanding
-    of how AI agents actually work — not just reading about tool use and OAuth, but
-    building something that depends on getting them right.
+    As a marketing analyst, GA4's interface is familiar territory — but pulling a specific
+    number for a specific stakeholder question usually means navigating several report
+    screens, adjusting date ranges, and exporting to a spreadsheet before it's presentable.
+    The goal was to collapse that into a single question typed in plain English.
   </p>
-
-  <h2>How it started</h2>
   <p>
-    The idea was simple to say and harder to build: connect an AI agent to Google Analytics
-    so it could answer traffic questions directly, generate charts, and summarize trends —
-    a chat interface standing in for a GA4 dashboard. The scope was deliberately a full web
-    app (not just a script), with real OAuth login so it could eventually be shared with
-    others, not just run privately on one machine.
+    The second, equally important goal: build real, defensible AI-engineering literacy —
+    not by reading about how agents work, but by making every decision that determines
+    whether one works correctly. Which tools does the agent get access to. What happens
+    when a tool call fails. How do you know if an answer is actually right. Those are the
+    questions this project was built to answer firsthand.
   </p>
 
-  <h2>Workflow</h2>
-  <p>The build happened in stages, each one surfacing a real problem to solve:</p>
-  <ul>
-    <li><strong>Scaffolding</strong> — Next.js app, GA4 Data API client, and a Claude
-      tool-use agent loop, built and verified in a sandboxed environment first.</li>
-    <li><strong>Local setup</strong> — Google Cloud OAuth credentials, an Anthropic API
-      key, and environment variables, hitting real beginner friction points: disk space
-      running out mid-install, a hidden duplicate API key line silently overriding the
-      real one, and a TextEdit rich-text paste silently corrupting a key.</li>
-    <li><strong>A real session bug</strong> — the OAuth login loop turned out to be caused
-      by using an outdated cookie-handling pattern (<code>req/res</code>) instead of the
-      App Router's <code>next/headers</code> cookies API. Diagnosed from server logs, fixed,
-      rebuilt, verified.</li>
-    <li><strong>Visual design</strong> — moved off default Tailwind styling to a deliberate
-      "measurement instrument" identity: paper background, brass accent, serif display type,
-      monospace data readouts.</li>
-    <li><strong>Validation</strong> — rather than trusting answers by default, built the habit
-      of cross-checking the agent's numbers against the real GA4 dashboard, and understanding
-      where GA4's own quirks (sampling, thresholding, a globally shared demo-account quota)
-      could look like bugs but weren't.</li>
-  </ul>
+  <h2 id="origin">How it started</h2>
+  <p>
+    The starting brief was simple to state and non-trivial to build: a chat interface,
+    backed by a real GA4 connection via OAuth (not a hardcoded service account — the goal
+    was something that could eventually be shared with other people, each seeing their own
+    data), that could answer traffic questions and render charts inline.
+  </p>
+  <p>
+    The scope was deliberately a full web application rather than a script or notebook.
+    A script proves an API call works; a web app proves an entire system holds together —
+    auth, session handling, an LLM in the loop, and a UI a non-technical person could
+    actually use.
+  </p>
 
-  <h2>Architecture</h2>
-  <p>Three parts talk to each other, with the backend as the only thing holding credentials:</p>
+  <h2 id="architecture">Architecture</h2>
+  <p>
+    Three parts talk to each other, with the backend as the only component that ever
+    touches credentials:
+  </p>
   <div class="arch-box">
-    <div class="arch-flow">
-      Browser (chat UI)<br>
-      &nbsp;&nbsp;↕<br>
-      Next.js backend — API routes + encrypted session cookie<br>
-      &nbsp;&nbsp;↕ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕<br>
-      Google (OAuth + GA4 Data API) &nbsp;&nbsp; Claude API (reasoning + tool calls)
+    <div class="arch-flow">Browser (chat UI)
+      ↕
+Next.js backend — API routes + encrypted session cookie
+      ↕                              ↕
+Google (OAuth + GA4 Data API)    Claude API (tool use)</div>
+  </div>
+  <p>
+    The core mechanism is Claude's <strong>tool use</strong> (function calling). Rather
+    than letting the model generate a GA4 query as free text, it's given three narrowly
+    scoped tools:
+  </p>
+  <div class="card">
+    <h4><code>list_ga4_properties</code></h4>
+    <p>Lists the GA4 properties the connected Google account can access.</p>
+  </div>
+  <div class="card">
+    <h4><code>run_ga4_report</code></h4>
+    <p>Executes a real GA4 Data API report — takes exact metric names, dimension names,
+      and a date range, nothing more open-ended than that.</p>
+  </div>
+  <div class="card">
+    <h4><code>propose_chart</code></h4>
+    <p>Packages a subset of the fetched data into a chart spec (type, axes, series) for
+      the frontend to render with Recharts.</p>
+  </div>
+  <p>
+    When a question comes in, the backend sends it to Claude along with these tool
+    definitions. Claude doesn't fetch anything itself — it returns a structured request
+    (e.g. <code>run_ga4_report({ metrics: ["sessions"], dimensions: ["date"], ... })</code>),
+    the backend executes the actual HTTPS call to Google, and the real result is fed back
+    to Claude to reason over. This loop can repeat several times in a single turn — a
+    comparison question might trigger two separate report calls before Claude has enough
+    to write an answer — capped at 6 iterations to prevent runaway loops.
+  </p>
+  <p>
+    Session state (the Google OAuth tokens, which GA4 property is selected) lives in an
+    encrypted cookie via <code>iron-session</code>, not a database — a deliberate scope
+    decision for a single-user MVP, with the tradeoff noted explicitly for anyone scaling
+    this to multiple concurrent users.
+  </p>
+
+  <h2 id="workflow">Build workflow</h2>
+  <p>The build moved in five stages, each with a distinct failure mode to solve:</p>
+  <ol>
+    <li><strong>Scaffolding.</strong> Next.js App Router project, GA4 Data API client
+      (thin wrapper around <code>runReport</code> and <code>accountSummaries</code>), and
+      the Claude tool-use agent loop — built and build-verified before ever touching a
+      real Google Cloud project, to isolate code correctness from environment setup.</li>
+    <li><strong>Google Cloud + credentials.</strong> OAuth client, consent screen scopes
+      (<code>analytics.readonly</code>), test users, and an Anthropic API key. This stage
+      surfaced more real friction than any code — see the bug log below.</li>
+    <li><strong>The session bug.</strong> A working-looking OAuth flow that silently
+      failed to persist login state, diagnosed from server logs and fixed by switching
+      cookie-handling APIs entirely (detailed below).</li>
+    <li><strong>Visual identity.</strong> Deliberately moved off default Tailwind styling
+      toward a "measurement instrument" aesthetic — paper background, brass accent,
+      Fraunces for display type, IBM Plex Mono for all numeric/data readouts — reasoning
+      that a tool about precise numbers should look like one.</li>
+    <li><strong>Hardening and validation.</strong> Cross-checking agent answers against
+      the live GA4 dashboard, understanding GA4's own quirks (sampling, thresholding, a
+      globally shared quota on the public demo property) well enough to distinguish "the
+      agent is wrong" from "GA4 itself is behaving as designed."</li>
+  </ol>
+
+  <h2 id="bugs">Bugs that shaped the build</h2>
+  <p>
+    None of these were exotic — they were the ordinary friction of shipping something
+    real, and each one taught something that a tutorial skips.
+  </p>
+  <div class="bug-log">
+    <div class="bug">
+      <div class="bug-title">The OAuth login loop</div>
+      <p>
+        After a successful Google login, the app would redirect home — then immediately
+        act as if login had never happened, sending the user back to "Connect." The
+        session cookie was being set using an older <code>getIronSession(req, res, ...)</code>
+        pattern built for Node's raw request/response objects, which doesn't reliably
+        persist cookies against Next.js's App Router <code>Request</code>/<code>Response</code>
+        objects. The fix: rewrite every session read/write to use
+        <code>getIronSession(await cookies(), ...)</code> from <code>next/headers</code> —
+        the API the App Router actually expects. Diagnosed by reading raw server request
+        logs and noticing the callback route fired twice in a row, which is the visible
+        symptom of a session that never actually saved.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">A leaked API key, caught and rotated</div>
+      <p>
+        Midway through adding a new feature, a routine check of the GitHub repo revealed
+        <code>.env.local</code> — containing the real Anthropic key, Google OAuth secret,
+        and session secret — sitting in the public commit history. Root cause: a missing
+        <code>.gitignore</code> file. All three credentials were rotated immediately, the
+        repository was deleted and rebuilt from a clean local state with
+        <code>.gitignore</code> verified before the first commit, and every
+        subsequent commit was checked for file count and content before publishing.
+        The practical lesson: treat "check the actual file list before you commit" as a
+        non-negotiable step, not a nice-to-have.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">Silent key corruption via a rich-text editor</div>
+      <p>
+        A pasted API key produced a persistent "invalid API key" error even though the
+        key was copied correctly. The cause: pasting into TextEdit's default rich-text
+        mode subtly altered characters in a way that was visually invisible but broke the
+        literal string. Fixed by writing the key directly from the clipboard into the env
+        file via a terminal command (<code>sed</code> + <code>pbpaste</code>), bypassing
+        any GUI text editor entirely.
+      </p>
+    </div>
+    <div class="bug">
+      <div class="bug-title">A duplicate env variable, silently ignored</div>
+      <p>
+        Even after "fixing" the API key, the same auth error persisted. A placeholder
+        line (<code>ANTHROPIC_API_KEY=letter</code>) had been left in the file alongside
+        the real key on a separate line — and the environment loader kept the
+        first declared value, silently discarding the second. Diagnosed by
+        checking the byte length of the matched line before assuming the key itself was
+        wrong.
+      </p>
     </div>
   </div>
+
+  <h2 id="validation">Validating the agent's answers</h2>
   <p>
-    When a question comes in, Claude doesn't fetch data itself — it requests a specific,
-    narrow tool call (<code>run_ga4_report</code> with exact metrics/dimensions/dates), the
-    backend executes the real GA4 API call, and the result is handed back to Claude to reason
-    over and turn into an answer, optionally with a chart. This tool-use loop can repeat
-    several times per question before Claude has enough to respond.
+    A working pipeline and a trustworthy one are different claims. Getting the agent to
+    respond isn't evidence it's responding correctly — GA4 has real limits
+    (sampling on complex queries, thresholding that hides small user counts, a default
+    attribution model that may not match how a team actually reports) that an LLM can
+    easily paper over with a confident-sounding but wrong answer.
+  </p>
+  <p>The approach taken here, in order of how much it actually helps:</p>
+  <ul>
+    <li><strong>A golden set.</strong> A fixed list of real questions with answers
+      cross-checked directly against the native GA4 dashboard, re-run after any change to
+      the system prompt or agent logic.</li>
+    <li><strong>Groundedness checks.</strong> Confirming the final written answer actually
+      matches the raw numbers the tool call returned, not a loosely-summarized
+      approximation of them.</li>
+    <li><strong>Explicit guardrails in the system prompt.</strong> Instructions that
+      constrain the model to real GA4 metric names and require a tool call before any
+      numeric claim — closing off the easiest path to a hallucinated statistic.</li>
+  </ul>
+
+  <h2 id="outcome">Final outcome</h2>
+  <p>
+    A working chat interface, connectable to any GA4 property via OAuth (including
+    Google's public demo account, so it's testable without needing your own site), that
+    answers real traffic questions using live fetched data and renders inline charts —
+    plus a rebuilt visual identity, an in-app project explainer, and a clean, secret-free
+    public repository ready to deploy to Vercel as a live, shareable app.
   </p>
 
-  <h2>Final outcome</h2>
-  <p>
-    A working chat interface that connects to any GA4 property via OAuth (including Google's
-    public demo account, so it's testable without needing your own site), answers traffic
-    questions with real fetched data, renders inline charts, and is deployable to Vercel as
-    a live, shareable app rather than a local-only script.
-  </p>
-
-  <h2>Learnings</h2>
-  <div class="learnings">
-    <p><strong>Tool design determines agent reliability more than the model does.</strong>
-      Narrow, specific tools (fetch this exact report) produce predictable behavior; vague
-      ones invite guessing.</p>
+  <h2 id="learnings">Learnings</h2>
+  <div class="card accent">
+    <h4>Tool design determines agent reliability more than the model choice does</h4>
+    <p>Narrow, specific tools (fetch exactly this report) produce predictable behavior.
+      Broad or vague tools invite the model to guess.</p>
   </div>
-  <div class="learnings">
-    <p><strong>AI answers need validation, not blind trust.</strong> Building a small "golden
-      set" of questions with known answers, and checking groundedness against the raw data
-      GA4 actually returned, is the difference between a demo and something usable.</p>
+  <div class="card accent">
+    <h4>AI answers need active validation, not trust by default</h4>
+    <p>A golden set and a groundedness habit are the actual difference between a demo and
+      something you'd let a stakeholder rely on.</p>
   </div>
-  <div class="learnings">
-    <p><strong>Most real bugs during this build were environment issues, not code
-      issues</strong> — disk space, duplicate env lines, a text editor silently altering
-      characters. Debugging systematically (checking file contents directly, isolating one
-      variable at a time) mattered more than any single line of code.</p>
+  <div class="card accent">
+    <h4>Most real bugs in a build like this are environment issues, not logic bugs</h4>
+    <p>Disk space, a missing gitignore, a text editor silently altering a paste — none of
+      these show up in a tutorial, and all of them cost more debugging time than any
+      actual application code.</p>
   </div>
-  <div class="learnings">
-    <p><strong>A dashboard and a chat agent solve different problems.</strong> Fixed, known
-      metrics don't need an LLM in the loop at all — only open-ended questions do. Knowing
-      when <em>not</em> to reach for AI is part of using it well.</p>
+  <div class="card accent">
+    <h4>Knowing when not to use an LLM is part of using one well</h4>
+    <p>Fixed, known metrics don't need an agent in the loop at all — a direct API call is
+      faster, cheaper, and has nothing to hallucinate. The chat only earns its keep for
+      genuinely open-ended questions.</p>
   </div>
 
   <div class="cta-row">

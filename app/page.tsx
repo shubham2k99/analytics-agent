@@ -56,9 +56,6 @@ export default function Home() {
     return (
       <div className="h-screen grid-paper flex flex-col items-center justify-center gap-6 px-6">
         <div className="text-center max-w-md">
-          <p className="font-data text-xs tracking-widest uppercase mb-3" style={{ color: "var(--accent-ink)" }}>
-            Instrument · GA4 reader
-          </p>
           <h1 className="font-display text-4xl mb-4" style={{ color: "var(--ink)" }}>
             GAnalyst
           </h1>
@@ -113,7 +110,7 @@ export default function Home() {
                 className="font-data text-xs px-4 py-2 text-center flex-1 text-white"
                 style={{ background: "var(--ink)" }}
               >
-                Read the full story
+                Check out the full project
               </a>
             </div>
           </div>
